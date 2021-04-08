@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/inconshreveable/go-update/internal/osext"
+	"github.com/doitdistributed/go-update/internal/osext"
 )
 
 var (
