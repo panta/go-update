@@ -1,0 +1,11 @@
+.DS_Store
+
+*.a
+*.sublime-project
+*.sublime-workspace
+
+/.idea/
+
+/internal/binarydist/test.new
+/internal/binarydist/test.old
+/internal/binarydist/test.patch
