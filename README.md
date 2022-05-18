@@ -14,7 +14,7 @@ import (
     "fmt"
     "net/http"
 
-    "github.com/inconshreveable/go-update"
+    "github.com/panta/go-update"
 )
 
 func doUpdate(url string) error {
@@ -63,3 +63,7 @@ The `go-update` package makes the following promises about API compatibility:
 
 ## License
 Apache
+
+## Upstream
+
+This is a fork of [doitdistributed/go-update](https://github.com/doitdistributed/go-update), which in turn is a fork of [inconshreveable/go-update](https://github.com/inconshreveable/go-update), now unmaintained.
