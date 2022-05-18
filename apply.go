@@ -111,18 +111,20 @@ func Apply(update io.Reader, opts Options) error {
 	if err != nil {
 		return err
 	}
-	os.Chmod(newPath, opts.TargetMode)
+	_ = os.Chmod(newPath, opts.TargetMode)
 	defer fp.Close()
 
 	_, err = io.Copy(fp, bytes.NewReader(newBytes))
 	if err != nil {
 		return err
 	}
-	// don't call fp.Sync(). system power off ,file will lost
-	fp.Sync()
+
+	// the fp.Sync() call is necessary to prevent file loss in event of a power off
+	_ = fp.Sync()
+
 	// if we don't call fp.Close(), windows won't let us move the new executable
 	// because the file will still be "in use"
-	fp.Close()
+	_ = fp.Close()
 
 	// this is where we'll move the executable to so that we can swap in the updated replacement
 	oldPath := opts.OldSavePath
