@@ -19,6 +19,8 @@ var (
 	openFile = os.OpenFile
 )
 
+const maxOldPathFailures = 3
+
 // Apply performs an update of the current executable (or opts.TargetFile, if set) with the contents of the given io.Reader.
 //
 // Apply performs the following actions to ensure a safe cross-platform update:
@@ -137,6 +139,26 @@ func Apply(update io.Reader, opts Options) error {
 	// 1. after a successful update, Windows can't remove the .old file because the process is still running
 	// 2. windows rename operations fail if the destination file already exists
 	_ = os.Remove(oldPath)
+
+	if opts.OldSavePath == "" {
+		nFailures := 0
+		for nFailures < maxOldPathFailures {
+			_ = os.Remove(oldPath)
+
+			// try to write to write to the oldPath, if it doesn't work, try a different one
+			// (the .EXECUTABLE.old could be in use from a previous stale update)
+			if err := os.WriteFile(oldPath, []byte("this is a test"), 0644); err != nil {
+				nFailures++
+				oldPath = filepath.Join(updateDir, fmt.Sprintf(".%s.old%d", filename, nFailures))
+			} else {
+				// found a good oldPath
+				break
+			}
+
+			// note we don't return an error even in case we exceeded the max # of failures
+			// since it's better to just try the rename later in case it works
+		}
+	}
 
 	// move the existing executable to a new file in the same directory
 	err = os.Rename(opts.TargetPath, oldPath)
