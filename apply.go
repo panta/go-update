@@ -141,7 +141,9 @@ func Apply(update io.Reader, opts Options) error {
 	// move the existing executable to a new file in the same directory
 	err = os.Rename(opts.TargetPath, oldPath)
 	if err != nil {
-		return err
+		if !opts.IgnoreMoveToOldErrors {
+			return err
+		}
 	}
 
 	// move the new exectuable in to become the new program
@@ -227,6 +229,12 @@ type Options struct {
 	// Store the old executable file at this path after a successful update.
 	// The empty string means the old executable file will be removed after the update.
 	OldSavePath string
+
+	// By default if the rename of the existing target binary to the OldSavePath
+	// (or to the default .EXECUTABLE.old) fails, the procedure is stopped with an error.
+	// Setting true here changes this behaviour and makes the update continue in face of
+	// such errors.
+	IgnoreMoveToOldErrors bool
 }
 
 // CheckPermissions determines whether the process has the correct permissions to
