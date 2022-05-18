@@ -3,7 +3,7 @@ package update
 import (
 	"io"
 
-	"github.com/doitdistributed/go-update/internal/binarydist"
+	"github.com/panta/go-update/internal/binarydist"
 )
 
 // Patcher defines an interface for applying binary patches to an old item to get an updated item.
